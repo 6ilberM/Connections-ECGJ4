@@ -8,11 +8,12 @@ public class playerController : MonoBehaviour
 {
     //References
     Rigidbody2D m_rb;
-    Animator m_anim;
+    // Animator m_anim;
 
-    SpringJoint2D m_springJnt;
+    SpringJoint2D m_springJoint;
 
     public Rigidbody2D rb_vine;
+    public inputManager m_mgr;
 
     //Ref Variables
     public bool iswithin;
@@ -37,18 +38,18 @@ public class playerController : MonoBehaviour
     private void Awake()
     {
         m_rb = GetComponent<Rigidbody2D>();
-        m_springJnt = GetComponent<SpringJoint2D>();
+        m_springJoint = GetComponent<SpringJoint2D>();
+        // m_anim = GetComponent<Animator>();
+        m_springJoint.enableCollision = false;
+        m_springJoint.autoConfigureDistance = false;
+        m_springJoint.autoConfigureConnectedAnchor = false;
+        m_springJoint.connectedAnchor = Vector2.zero;
+        m_springJoint.anchor = Vector2.zero;
+        m_springJoint.distance = 0.5f;
+        m_springJoint.dampingRatio = .05f;
+        m_springJoint.frequency = 3;
 
-        m_springJnt.enableCollision = false;
-        m_springJnt.autoConfigureDistance = false;
-        m_springJnt.autoConfigureConnectedAnchor = false;
-        m_springJnt.connectedAnchor = Vector2.zero;
-        m_springJnt.anchor = Vector2.zero;
-        m_springJnt.distance = 0.5f;
-        m_springJnt.dampingRatio = .05f;
-        m_springJnt.frequency = 3;
-
-        m_springJnt.enabled = false;
+        m_springJoint.enabled = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -59,8 +60,12 @@ public class playerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
+        if (Input.GetKeyDown(KeyCode.O) && m_mgr != null)
+        {
+            Destroy(gameObject);
+        }
     }
+
     ///Flips Character
     private void Flip()
     {
@@ -86,17 +91,22 @@ public class playerController : MonoBehaviour
     public void Grab(bool _z)
     {
 
-        if (_z && !m_springJnt.enabled && rb_vine != null)
+        if (_z && !m_springJoint.enabled && rb_vine != null)
         {
             if (iswithin)
             {
-                m_springJnt.enabled = true;
-                m_springJnt.connectedBody = rb_vine.GetComponent<Rigidbody2D>();
+                m_springJoint.enabled = true;
+                m_springJoint.connectedBody = rb_vine.GetComponent<Rigidbody2D>();
             }
         }
         else if (_z)
         {
-            m_springJnt.enabled = false;
+            m_springJoint.enabled = false;
+        }
+
+        else
+        {
+            // do nothing
         }
 
     }
@@ -128,4 +138,13 @@ public class playerController : MonoBehaviour
             Flip();
         }
     }
+
+    private void OnDestroy()
+    {
+        if (m_mgr != null)
+        {
+            m_mgr.m_Repopulate = true;
+        }
+    }
+
 }

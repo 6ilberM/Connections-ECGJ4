@@ -8,9 +8,10 @@ public class inputManager : MonoBehaviour
 
     public Animator animator;
 
-
     [SerializeField] KeyCode btn_Grab_Conf = KeyCode.Z;
     [SerializeField] KeyCode btn_Shoot_Back = KeyCode.X;
+
+    public bool m_Repopulate;
 
     float f_force_Hrzt = 0f;
 
@@ -23,8 +24,13 @@ public class inputManager : MonoBehaviour
         if (controller == null)
         {
             controller = GameObject.FindGameObjectWithTag("Player").GetComponent<playerController>();
+            animator = controller.GetComponent<Animator>();
+            controller.m_mgr = this;
         }
+
     }
+
+
     private bool m_isAxisInUse = false;
     // Update is called once per frame
     void Update()
@@ -62,6 +68,17 @@ public class inputManager : MonoBehaviour
             }
         }
 
+        else if (m_Repopulate == true)
+        {
+            if (GameObject.FindGameObjectWithTag("Player").GetComponent<playerController>() != null)
+            {
+                controller = GameObject.FindGameObjectWithTag("Player").GetComponent<playerController>();
+                animator = controller.GetComponent<Animator>();
+                controller.m_mgr = this;
+                m_Repopulate = false;
+            }
+        }
+
         else
         {
             //getaxisRaw if you want -1 0 1 get axis 0.0f 0.5f 1.0f and so on
@@ -74,6 +91,7 @@ public class inputManager : MonoBehaviour
                 //Grab
                 controller.Grab(true);
             }
+
             if (Input.GetKeyDown(btn_Shoot_Back))
             {
                 //Throw
@@ -90,8 +108,12 @@ public class inputManager : MonoBehaviour
     void FixedUpdate()
     {
         // Move our character
-        controller.Move(f_force_Hrzt * Time.fixedDeltaTime, b_jump);
-        b_jump = false;
+        if (controller != null)
+        {
+            controller.Move(f_force_Hrzt * Time.fixedDeltaTime, b_jump);
+            b_jump = false;
+        }
+
     }
 
 }
