@@ -48,8 +48,8 @@ public class sc_Node : MonoBehaviour
             hinge.autoConfigureConnectedAnchor = false;
             hinge.enableCollision = false;
             hinge.breakForce = 1.19f * 50 * 9.81f * 9.81f;
-            hinge.anchor = new Vector2(0, 0.49f);
-            hinge.connectedAnchor = new Vector2(0, -0.49f);
+            hinge.anchor = new Vector2(0, 0.45f);
+            hinge.connectedAnchor = new Vector2(0, -0.39f);
 
             prev = hinge.gameObject;
         }

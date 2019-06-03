@@ -12,6 +12,11 @@ public class playerController : MonoBehaviour
 
     SpringJoint2D m_springJnt;
 
+    public Rigidbody2D rb_vine;
+
+    //Ref Variables
+    public bool iswithin;
+
     //Custom Ref For Damping
     private Vector3 m_Velocity = Vector3.zero;
     private float m_float;
@@ -78,18 +83,15 @@ public class playerController : MonoBehaviour
         }
 
     }
-    public Rigidbody2D otherRigid;
-
-    public bool within;
     public void Grab(bool _z)
     {
 
-        if (_z && !m_springJnt.enabled && otherRigid != null)
+        if (_z && !m_springJnt.enabled && rb_vine != null)
         {
-            if (within)
+            if (iswithin)
             {
                 m_springJnt.enabled = true;
-                m_springJnt.connectedBody = otherRigid.GetComponent<Rigidbody2D>();
+                m_springJnt.connectedBody = rb_vine.GetComponent<Rigidbody2D>();
             }
         }
         else if (_z)
