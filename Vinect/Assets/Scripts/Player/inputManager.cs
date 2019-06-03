@@ -8,32 +8,82 @@ public class inputManager : MonoBehaviour
 
     public Animator animator;
 
+
+    [SerializeField] KeyCode btn_Grab_Conf = KeyCode.Z;
+    [SerializeField] KeyCode btn_Shoot_Back = KeyCode.X;
+
     float f_force_Hrzt = 0f;
 
     bool b_jump;
     public bool m_jumpEnabled = true;
 
+    public bool b_isMenu;
     void Awake()
     {
-
         if (controller == null)
         {
             controller = GameObject.FindGameObjectWithTag("Player").GetComponent<playerController>();
         }
     }
-
+    private bool m_isAxisInUse = false;
     // Update is called once per frame
     void Update()
     {
-        //getaxisRaw if you want -1 0 1 get axis 0.0f 0.5f 1.0f and so on
-        f_force_Hrzt = Input.GetAxis("Horizontal");
-
-        animator.SetFloat("Speed", Mathf.Abs(f_force_Hrzt));
-
-        if (Input.GetButtonDown("Jump") && m_jumpEnabled)
+        if (b_isMenu)
         {
-            b_jump = true;
-           // animator.SetBool("IsJumping", true);
+            if (Input.GetKeyDown(btn_Grab_Conf))
+            {
+                //Confirm
+            }
+            if (Input.GetKeyDown(btn_Shoot_Back))
+            {
+                //Go Back
+            }
+
+            if (Input.GetAxisRaw("Horizontal") != 0 && Input.GetAxisRaw("Vertical") != 0)
+            {
+                if (m_isAxisInUse == false)
+                {
+                    if (Input.GetAxisRaw("Horizontal") == -1 || Input.GetAxisRaw("Vertical") == -1)
+                    {
+                        // Izquierda
+                    }
+                    else if (Input.GetAxisRaw("Horizontal") == 1 || Input.GetAxisRaw("Vertical") == 1)
+                    {
+                        // Derecha
+                    }
+
+                    m_isAxisInUse = true;
+                }
+            }
+            if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
+            {
+                m_isAxisInUse = false;
+            }
+        }
+
+        else
+        {
+            //getaxisRaw if you want -1 0 1 get axis 0.0f 0.5f 1.0f and so on
+            f_force_Hrzt = Input.GetAxisRaw("Horizontal");
+
+            animator.SetFloat("Speed", Mathf.Abs(f_force_Hrzt));
+
+            if (Input.GetKeyDown(btn_Grab_Conf))
+            {
+                //Grab
+                controller.Grab(true);
+            }
+            if (Input.GetKeyDown(btn_Shoot_Back))
+            {
+                //Throw
+            }
+
+            if (Input.GetButtonDown("Jump") && m_jumpEnabled)
+            {
+                b_jump = true;
+                // animator.SetBool("IsJumping", true);
+            }
         }
     }
 

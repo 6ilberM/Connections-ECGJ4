@@ -10,6 +10,8 @@ public class playerController : MonoBehaviour
     Rigidbody2D m_rb;
     Animator m_anim;
 
+    SpringJoint2D m_springJnt;
+
     //Custom Ref For Damping
     private Vector3 m_Velocity = Vector3.zero;
     private float m_float;
@@ -21,7 +23,7 @@ public class playerController : MonoBehaviour
     [Range(1, 10)] [SerializeField] float m_speed = 3.72f;
 
     //Scalar For Movement Smoothing
-    [Range(0, .3f)] [SerializeField] float m_ScSmooth = .05f;
+    [Range(0, .2f)] [SerializeField] float m_ScSmooth = .05f;
 
     //Variables
     private bool m_FacingRight;
@@ -30,6 +32,18 @@ public class playerController : MonoBehaviour
     private void Awake()
     {
         m_rb = GetComponent<Rigidbody2D>();
+        m_springJnt = GetComponent<SpringJoint2D>();
+
+        m_springJnt.enableCollision = false;
+        m_springJnt.autoConfigureDistance = false;
+        m_springJnt.autoConfigureConnectedAnchor = false;
+        m_springJnt.connectedAnchor = Vector2.zero;
+        m_springJnt.anchor = Vector2.zero;
+        m_springJnt.distance = 0.5f;
+        m_springJnt.dampingRatio = .05f;
+        m_springJnt.frequency = 3;
+
+        m_springJnt.enabled = false;
     }
     // Start is called before the first frame update
     void Start()
@@ -64,7 +78,26 @@ public class playerController : MonoBehaviour
         }
 
     }
+    public Rigidbody2D otherRigid;
 
+    public bool within;
+    public void Grab(bool _z)
+    {
+
+        if (_z && !m_springJnt.enabled && otherRigid != null)
+        {
+            if (within)
+            {
+                m_springJnt.enabled = true;
+                m_springJnt.connectedBody = otherRigid.GetComponent<Rigidbody2D>();
+            }
+        }
+        else if (_z)
+        {
+            m_springJnt.enabled = false;
+        }
+
+    }
 
     public void Move(float _hSpeed, bool _jump)
     {
@@ -77,6 +110,7 @@ public class playerController : MonoBehaviour
             // m_rb.velocity = new Vector3(targetspeed, m_rb.velocity.y, 0);
 
             m_rb.velocity = Vector3.SmoothDamp(m_rb.velocity, v3_targetVel, ref m_Velocity, m_ScSmooth);
+            // m_rb.velocity += new Vector2(_hSpeed * m_speed * 100, m_rb.velocity.y);
         }
         Jump(_jump);
 
@@ -92,7 +126,4 @@ public class playerController : MonoBehaviour
             Flip();
         }
     }
-
-
-
 }
