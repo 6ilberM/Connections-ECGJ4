@@ -84,7 +84,7 @@ public class inputManager : MonoBehaviour
             //getaxisRaw if you want -1 0 1 get axis 0.0f 0.5f 1.0f and so on
             f_force_Hrzt = Input.GetAxisRaw("Horizontal");
 
-            animator.SetFloat("Speed", Mathf.Abs(f_force_Hrzt));
+            // animator.SetFloat("Speed", Mathf.Abs(f_force_Hrzt));
 
             if (Input.GetKeyDown(btn_Grab_Conf))
             {
@@ -100,7 +100,7 @@ public class inputManager : MonoBehaviour
             if (Input.GetButtonDown("Jump") && m_jumpEnabled)
             {
                 b_jump = true;
-                // animator.SetBool("IsJumping", true);
+                animator.SetBool("IsJumping", true);
             }
         }
     }
@@ -114,6 +114,10 @@ public class inputManager : MonoBehaviour
             b_jump = false;
         }
 
+    }
+    public void OnLanding()
+    {
+        animator.SetBool("IsJumping", false);
     }
 
 }

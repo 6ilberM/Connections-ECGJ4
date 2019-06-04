@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class playerController : MonoBehaviour
@@ -34,6 +35,12 @@ public class playerController : MonoBehaviour
     //Variables
     private bool m_FacingRight;
 
+    //Stuff
+    [Header("Events")]
+    [Space]
+
+    public UnityEvent OnLandEvent;
+    private bool b_isGrounded;
 
     private void Awake()
     {
@@ -50,6 +57,11 @@ public class playerController : MonoBehaviour
         m_springJoint.frequency = 3;
 
         m_springJoint.enabled = false;
+
+        if (OnLandEvent == null)
+        {
+            OnLandEvent = new UnityEvent();
+        }
     }
     // Start is called before the first frame update
     void Start()
@@ -79,14 +91,21 @@ public class playerController : MonoBehaviour
     }
     private void Jump(bool _jump)
     {
-        if (_jump)
+
+
+        if (_jump && true == b_isGrounded)
         {
+            if (m_rb.velocity.y < 0)
+            {
+                m_rb.velocity = new Vector2(m_rb.velocity.x, 0);
+
+            }
             float mygrav = m_rb.gravityScale * Physics2D.gravity.y;
             var _jumpVelocity = (Mathf.Sqrt(Mathf.Abs(mygrav) * m_jumpHeight * 2.0f));
-
             m_rb.AddForce(m_rb.transform.up * _jumpVelocity * m_rb.mass, ForceMode2D.Impulse);
-        }
+            b_isGrounded = false;
 
+        }
     }
     public void Grab(bool _z)
     {
@@ -147,4 +166,22 @@ public class playerController : MonoBehaviour
         }
     }
 
+    void groundRayCheck()
+    {
+        bool wasgrounded = b_isGrounded;
+        //Landed
+        if ((Physics2D.Raycast(transform.position, Vector2.down,
+        GetComponent<CapsuleCollider2D>().bounds.extents.y + 0.1f, LayerMask.GetMask("Platform"))) && (m_rb.velocity.normalized.y <= 0))
+        {
+            b_isGrounded = true;
+            if (!wasgrounded)
+            {
+                OnLandEvent.Invoke();
+            }
+        }
+    }
+    private void FixedUpdate()
+    {
+        groundRayCheck();
+    }
 }
