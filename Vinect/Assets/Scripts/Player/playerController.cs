@@ -63,19 +63,11 @@ public class playerController : MonoBehaviour
             OnLandEvent = new UnityEvent();
         }
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
 
     // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O) && m_mgr != null)
-        {
-            Destroy(gameObject);
-        }
+        Fling();
     }
 
     ///Flips Character
@@ -91,8 +83,6 @@ public class playerController : MonoBehaviour
     }
     private void Jump(bool _jump)
     {
-
-
         if (_jump && true == b_isGrounded)
         {
             if (m_rb.velocity.y < 0)
@@ -107,9 +97,9 @@ public class playerController : MonoBehaviour
 
         }
     }
+
     public void Grab(bool _z)
     {
-
         if (_z && !m_springJoint.enabled && rb_vine != null)
         {
             if (iswithin)
@@ -128,6 +118,28 @@ public class playerController : MonoBehaviour
             // do nothing
         }
 
+    }
+
+
+
+    private void Fling()
+    {
+        Vector3 MyPoitnt = Input.mousePosition;
+        if (Input.GetMouseButtonDown(0) && rb_vine != null)
+        {
+            MyPoitnt.z = 10;
+            Vector3 pos = Camera.main.ScreenToWorldPoint(MyPoitnt);
+
+            Debug.Log(pos);
+
+            Vector3 desiredVec = pos - transform.position;
+
+            desiredVec.Normalize();
+            rb_vine.AddForce(desiredVec * 5, ForceMode2D.Impulse);
+
+            rb_vine = null;
+            m_springJoint.enabled = false;
+        }
     }
 
     public void Move(float _hSpeed, bool _jump)

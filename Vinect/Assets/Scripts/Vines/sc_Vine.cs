@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class sc_Vine : MonoBehaviour
 {
-    playerController woop;
+    playerController Player;
 
     private void Start()
     {
@@ -13,21 +13,19 @@ public class sc_Vine : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
+            Player = other.gameObject.GetComponent<playerController>();
 
-            woop = other.gameObject.GetComponent<playerController>();
-            // woop = other.gameObject.GetComponent<playerController>();
-            
-            woop.rb_vine = gameObject.GetComponent<Rigidbody2D>();
-            // Debug.Log("um what");
-            woop.iswithin = true;
+            Player.rb_vine = gameObject.GetComponent<Rigidbody2D>();
+
+            Player.iswithin = true;
         }
     }
     private void OnTriggerStay2D(Collider2D other)
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            // Debug.Log("um que");
-            woop.iswithin = true;
+
+            Player.iswithin = true;
 
         }
     }
@@ -35,7 +33,7 @@ public class sc_Vine : MonoBehaviour
     {
         if (other.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
-            woop.iswithin = false;
+            Player.iswithin = false;
         }
     }
 }
