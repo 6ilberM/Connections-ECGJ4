@@ -120,12 +120,10 @@ public class playerController : MonoBehaviour
 
     }
 
-
-
     private void Fling()
     {
         Vector3 MyPoitnt = Input.mousePosition;
-        if (Input.GetMouseButtonDown(0) && rb_vine != null)
+        if (Input.GetMouseButtonDown(0) && rb_vine != null && iswithin)
         {
             MyPoitnt.z = 10;
             Vector3 pos = Camera.main.ScreenToWorldPoint(MyPoitnt);
@@ -135,7 +133,7 @@ public class playerController : MonoBehaviour
             Vector3 desiredVec = pos - transform.position;
 
             desiredVec.Normalize();
-            rb_vine.AddForce(desiredVec * 5, ForceMode2D.Impulse);
+            rb_vine.AddForce(desiredVec * 6.5f, ForceMode2D.Impulse);
 
             rb_vine = null;
             m_springJoint.enabled = false;

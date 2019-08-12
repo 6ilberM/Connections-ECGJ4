@@ -22,7 +22,7 @@ public class sc_Node : MonoBehaviour
         }
     }
 
-    float f_ThresholdDistance = .519f;
+    // float f_ThresholdDistance = .519f;
 
     private void Start()
     {
